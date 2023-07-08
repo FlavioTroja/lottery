@@ -15,7 +15,7 @@ interface User {
   email: string;
 }
 
-export default async function UsersTable({ users }: { users: User[] }) {
+export default async function ExtractionsTable({ extractions }: { extractions: Extraction[] }) {
   return (
     <Table>
       <TableHead>
@@ -26,9 +26,9 @@ export default async function UsersTable({ users }: { users: User[] }) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell>{user.name}</TableCell>
+        {extractions.map((extraction) => (
+          <TableRow key={extraction.id}>
+            <TableCell>{extraction.date}</TableCell>
             <TableCell>
               <Text>{user.username}</Text>
             </TableCell>

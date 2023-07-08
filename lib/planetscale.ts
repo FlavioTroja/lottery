@@ -9,8 +9,15 @@ interface User {
   email: string;
 }
 
+interface Extraction {
+  id: Generated<number>;
+  date: string;
+  cities: string[];
+}
+
 interface Database {
   users: User;
+  extractions: Extraction;
   // https://github.com/nextauthjs/next-auth/issues/4922
 }
 
