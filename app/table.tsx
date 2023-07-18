@@ -8,11 +8,21 @@ import {
   Text
 } from '@tremor/react';
 
-interface User {
+interface Extraction {
   id: number;
-  name: string;
-  username: string;
-  email: string;
+  date: string;
+  code: string;
+  //details: ExtractionDetail[];
+}
+
+interface ExtractionDetail {
+  id: number;
+  city: string;
+  ext1: string;
+  ext2: string;
+  ext3: string;
+  ext4: string;
+  ext5: string;
 }
 
 export default async function ExtractionsTable({ extractions }: { extractions: Extraction[] }) {
@@ -20,20 +30,18 @@ export default async function ExtractionsTable({ extractions }: { extractions: E
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>Name</TableHeaderCell>
-          <TableHeaderCell>Username</TableHeaderCell>
-          <TableHeaderCell>Email</TableHeaderCell>
+          <TableHeaderCell>Data</TableHeaderCell>
+          <TableHeaderCell>Concorso</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {extractions.map((extraction) => (
           <TableRow key={extraction.id}>
-            <TableCell>{extraction.date}</TableCell>
             <TableCell>
-              <Text>{user.username}</Text>
+              <Text>{extraction.date}</Text>
             </TableCell>
             <TableCell>
-              <Text>{user.email}</Text>
+              <Text>{extraction.code}</Text>
             </TableCell>
           </TableRow>
         ))}
