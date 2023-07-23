@@ -26,7 +26,7 @@ async function getData() {
 
     const year = `_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=2023`;
     const code = `_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=75`;
-    const res = await fetch(`${process.env.LOTTERY_URL}&${year}&${code}`, requestOptions);
+    const res = fetch(`${process.env.LOTTERY_URL}&${year}&${code}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
@@ -40,9 +40,9 @@ async function getData() {
     return res.text();
   }
 
-export default function handler(req, res) {    
+export default async function handler(req, res) {    
     return (<>
-        getData()
+        {getData()}
     </>)
     //res.status(200).end(getData());
 }

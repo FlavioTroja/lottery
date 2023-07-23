@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
  
 describe('Handler', () => {
   it('renders a heading', () => {
-    render(<Handler />)
- 
+    const { container } = render(<Handler />)
+    expect(container.firstChild).toHaveClass('container py-4')
   })
 })
