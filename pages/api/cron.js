@@ -27,9 +27,9 @@ export default async function handler(req, res) {
         headers: myHeaders
     };
     
-    const year = 2023;
-    const extNumber = 75;
-    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${year}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extNumber}`, requestOptions);
+    const yearQuery = 2023;
+    const extQuery = 1;
+    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${yearQuery}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
@@ -44,14 +44,17 @@ export default async function handler(req, res) {
     const $ = cheerio.load(page);
     const label = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
 
-    const found = await extraction.findByCode(`${extNumber}/${year}`);
-    console.log(found);
+    const found = await extraction.findByCode(`${extQuery}/${yearQuery}`);
     if(!found) {
-      console.log(`Element ${extNumber}/${year} not found.`);
+      console.log(`${label.match(/\d+\/\d+\/\d+/g) ?? ''} - Element ${extQuery}/${yearQuery} not found.`);
+
+      const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
+      const [day, month, year] = stringDate?.toString().split('/');
+      const date = new Date(+year, +month - 1, +day);
 
       await extraction.create({
-        code: `${extNumber}/${year}`,
-        date: label.match(/\d+\/\d+\/\d+/g) ?? '',
+        code: `${extQuery}/${yearQuery}`,
+        date,
         label
       });
     }

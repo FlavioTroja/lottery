@@ -10,7 +10,7 @@ import {
 
 export interface Extraction {
   id?: number;
-  date: string;
+  date: Date;
   code: string;
   label: string;
   //details?: ExtractionDetail[];
@@ -27,30 +27,20 @@ export interface ExtractionDetail {
   ext5: string;
 }
 
-export default async function ExtractionsTable({ extractions }: { extractions: Extraction[] }) {
+export default async function ExtractionsTable({ extraction }: { extraction?: Extraction }) {
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>Data</TableHeaderCell>
-          <TableHeaderCell>Concorso</TableHeaderCell>
-          <TableHeaderCell>Etichetta</TableHeaderCell>
+          <TableHeaderCell>{extraction?.label}</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {extractions.map((extraction) => (
-          <TableRow key={extraction.id}>
+          <TableRow key={extraction?.id}>
             <TableCell>
-              <Text>{extraction.code}</Text>
-            </TableCell>
-            <TableCell>
-              <Text>{extraction.date}</Text>
-            </TableCell>
-            <TableCell>
-              <Text>{extraction.label}</Text>
+              <Text>{extraction?.label}</Text>
             </TableCell>
           </TableRow>
-        ))}
       </TableBody>
     </Table>
   );

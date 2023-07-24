@@ -10,7 +10,7 @@ interface User {
 
 interface Extraction {
   id: Generated<number>;
-  date: string;
+  date: Date;
   code: string;
   label: string;
   //details: ExtractionDetail[];

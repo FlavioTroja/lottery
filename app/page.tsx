@@ -11,21 +11,22 @@ export default async function IndexPage({
   searchParams: { q: string };
 }) {
   const search = searchParams.q ?? '';
-  const extractions = await queryBuilder
+  const extraction = await queryBuilder
     .selectFrom('extractions')
     .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', `%${search}%`)
-    .execute();
+    .orderBy('date', 'desc')
+    .executeTakeFirst();
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       <Title>Lotto</Title>
       <Text>
-        Estrazione del lotto.
+        {extraction?.label}
       </Text>
       <Search />
       <Card className="mt-6">
-        <ExtractionsTable extractions={extractions} />
+        <ExtractionsTable extraction={extraction} />
       </Card>
     </main>
   );
