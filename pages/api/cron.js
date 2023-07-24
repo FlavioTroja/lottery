@@ -1,4 +1,7 @@
-async function getData() {
+import * as cheerio from 'cheerio';
+import * as extraction from '../../services/extraction.service.tsx';
+
+export default async function handler(req, res) {    
 
     let myHeaders = new Headers();
     myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0");
@@ -23,26 +26,35 @@ async function getData() {
         method: 'POST',
         headers: myHeaders
     };
-
-    const year = `_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=2023`;
-    const code = `_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=75`;
-    const res = fetch(`${process.env.LOTTERY_URL}&${year}&${code}`, requestOptions);
+    
+    const year = 2023;
+    const extNumber = 75;
+    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${year}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extNumber}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
     // Recommendation: handle errors
-    if (!res.ok) {
+    if (!response.ok) {
       // This will activate the closest `error.js` Error Boundary
       throw new Error('Failed to fetch data');
     }
    
-    console.log(res.text());
-    return res.text();
-  }
+    const page = await response.text();
+    
+    const $ = cheerio.load(page);
+    const label = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
 
-export default async function handler(req, res) {    
-    return (<>
-        {getData()}
-    </>)
-    //res.status(200).end(getData());
+    const found = await extraction.findByCode(`${extNumber}/${year}`);
+    console.log(found);
+    if(!found) {
+      console.log(`Element ${extNumber}/${year} not found.`);
+
+      await extraction.create({
+        code: `${extNumber}/${year}`,
+        date: label.match(/\d+\/\d+\/\d+/g) ?? '',
+        label
+      });
+    }
+
+    return res.status(200).json(label);
 }

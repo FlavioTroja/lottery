@@ -13,7 +13,7 @@ export default async function IndexPage({
   const search = searchParams.q ?? '';
   const extractions = await queryBuilder
     .selectFrom('extractions')
-    .select(['id', 'date', 'code'])
+    .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', `%${search}%`)
     .execute();
 

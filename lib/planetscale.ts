@@ -1,4 +1,3 @@
-import 'server-only';
 import { Generated, Kysely } from 'kysely';
 import { PlanetScaleDialect } from 'kysely-planetscale';
 
@@ -13,7 +12,8 @@ interface Extraction {
   id: Generated<number>;
   date: string;
   code: string;
-  details: ExtractionDetail[];
+  label: string;
+  //details: ExtractionDetail[];
 }
 
 interface ExtractionDetail {

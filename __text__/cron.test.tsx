@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
 import Handler from '../pages/api/cron'
-import '@testing-library/jest-dom'
- 
+import '@testing-library/jest-dom' 
+
 describe('Handler', () => {
-  it('renders a heading', () => {
-    const { container } = render(<Handler />)
-    expect(container.firstChild).toHaveClass('container py-4')
+  it('renders a heading', async () => {
+    const response = await fetch("/api/cron", { method: "POST" });
+    expect(await response.text()).toBeDefined();
   })
 })
