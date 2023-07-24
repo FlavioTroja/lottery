@@ -8,7 +8,7 @@ interface User {
   email: string;
 }
 
-interface Extraction {
+export interface Extraction {
   id: Generated<number>;
   date: Date;
   code: string;

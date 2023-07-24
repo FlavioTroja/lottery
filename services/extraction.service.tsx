@@ -1,7 +1,7 @@
 'use server'
 
-import { queryBuilder } from '../lib/planetscale';
-import { Extraction } from '../app/table';
+import { queryBuilder, Extraction } from '../lib/planetscale';
+//import { Extraction } from '../app/table';
 
 export async function findByCode(code: string) {    
     
@@ -24,7 +24,7 @@ export async function create(extraction: Extraction) {
         code: extraction.code,
         date: extraction.date,
         label: extraction.label,
-        details: []
+        details: extraction.details
       })
       .executeTakeFirst();
 
