@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     };
     
     const yearQuery = 2023;
-    const extQuery = 1;
+    const extQuery = 78;
     const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${yearQuery}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
@@ -52,11 +52,23 @@ export default async function handler(req, res) {
       const [day, month, year] = stringDate?.toString().split('/');
       const date = new Date(+year, +month - 1, +day);
 
-      await extraction.create({
+      const saved = await extraction.create({
         code: `${extQuery}/${yearQuery}`,
         date,
-        label
+        label, 
+        details: [{
+          code: "R1",
+          city: "ANDRIA",
+          ext1: 12,
+          ext2: 12,
+          ext3: 12,
+          ext4: 12,
+          ext5: 12
+        }]
       });
+
+      console.log(JSON.stringify(saved, null, 4));
+      console.log("ESTAZIONI:" + $('table.tabella_d').text());
     }
 
     return res.status(200).json(label);

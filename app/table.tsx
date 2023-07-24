@@ -13,7 +13,7 @@ export interface Extraction {
   date: Date;
   code: string;
   label: string;
-  //details?: ExtractionDetail[];
+  details?: ExtractionDetail[];
 }
 
 export interface ExtractionDetail {

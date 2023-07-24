@@ -13,11 +13,12 @@ interface Extraction {
   date: Date;
   code: string;
   label: string;
-  //details: ExtractionDetail[];
+  details?: ExtractionDetail[];
 }
 
 interface ExtractionDetail {
   id: Generated<number>;
+  code: string;
   city: string;
   ext1: string;
   ext2: string;

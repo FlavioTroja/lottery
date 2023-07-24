@@ -24,7 +24,7 @@ export async function create(extraction: Extraction) {
         code: extraction.code,
         date: extraction.date,
         label: extraction.label,
-        //details: []
+        details: []
       })
       .executeTakeFirst();
 
