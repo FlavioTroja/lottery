@@ -13,7 +13,7 @@ export interface Extraction {
   date: Date;
   code: string;
   label: string;
-  details?: ExtractionDetail[];
+  details?: string[];
 }
 
 interface ExtractionDetail {
@@ -27,7 +27,7 @@ interface ExtractionDetail {
   ext5: string;
 }
 
-interface Database {
+export interface Database {
   users: User;
   extractions: Extraction;
   extractionDetails: ExtractionDetail;

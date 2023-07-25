@@ -15,7 +15,7 @@ export default async function IndexPage({
     .selectFrom('extractions')
     .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', `%${search}%`)
-    .orderBy('date', 'desc')
+    .orderBy('date')
     .executeTakeFirst();
 
   return (
