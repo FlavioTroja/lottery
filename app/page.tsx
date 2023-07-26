@@ -3,8 +3,6 @@ import { queryBuilder } from '../lib/planetscale';
 import Search from './search';
 import ExtractionDetailsTable from './table';
 
-export const dynamic = 'force-dynamic';
-
 export default async function IndexPage({
   searchParams
 }: {
@@ -17,9 +15,9 @@ export default async function IndexPage({
     .orderBy('date', 'desc')
     .executeTakeFirstOrThrow();
 
-  const extractionDetail = await queryBuilder
+  const details = await queryBuilder
     .selectFrom('extractionDetails')
-    .select(['id', 'city', 'ext1', 'ext2', 'ext3', 'ext4', 'ext5', 'extraction_id'])
+    .select(['id', 'code', 'city', 'ext1', 'ext2', 'ext3', 'ext4', 'ext5', 'extraction_id'])
     .where('extraction_id', '=', extraction.id)
     .where('city', 'like', `%${search}%`)
     .execute();
@@ -32,7 +30,7 @@ export default async function IndexPage({
       </Text>
       <Search />
       <Card className="mt-6">
-        <ExtractionDetailsTable extractionDetail={extractionDetail} />
+        <ExtractionDetailsTable details={details} />
       </Card>
     </main>
   );

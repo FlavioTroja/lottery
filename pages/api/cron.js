@@ -29,10 +29,13 @@ export default async function handler(req, res) {
         headers: myHeaders
     };
     
-    //const yearQuery = 2023;
-    //const extQuery = 1;
+    let [ extQuery, yearQuery ] = [0, 2023];
+
     const last = await extraction.findLast();
-    let [ extQuery, yearQuery ] = last.code.split("/");
+
+    if (last) {
+      [ extQuery, yearQuery ] = last?.code?.split("/");
+    }
 
     extQuery = !!extQuery ? +extQuery + 1 : 1;
     yearQuery = yearQuery || 2023;
@@ -79,7 +82,6 @@ export default async function handler(req, res) {
           extraction_id: saved.insertId
         };
       }).toArray();
-      console.log(exts);
 
       for (let i = 0; i < exts.length; i++) {
         await extractionDetail.create(exts[i]);

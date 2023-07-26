@@ -27,26 +27,40 @@ export interface ExtractionDetail {
   extraction_id: number;
 }
 
-export default async function ExtractionDetailsTable({ extractionDetail }: { extractionDetail?: ExtractionDetail }) {
+export default async function ExtractionDetailsTable({ details }: { details: ExtractionDetail[] }) {
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>{extractionDetail?.city}</TableHeaderCell>
-          <TableHeaderCell>{extractionDetail?.ext1}</TableHeaderCell>
+          <TableHeaderCell>Città</TableHeaderCell>
+          <TableHeaderCell>Primo Estratto</TableHeaderCell>
+          <TableHeaderCell>Secondo Estratto</TableHeaderCell>
+          <TableHeaderCell>Terzo Estratto</TableHeaderCell>
+          <TableHeaderCell>Quarto Estratto</TableHeaderCell>
+          <TableHeaderCell>Quinto Estratto</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
-          <TableRow key={extractionDetail?.id}>
+      {details.map((detail) => (
+          <TableRow key={detail.id}>
+            <TableCell>{detail.city}</TableCell>
             <TableCell>
-              <Text>{extractionDetail?.city}</Text>
+              <Text>{detail.ext1}</Text>
             </TableCell>
-          </TableRow>
-          <TableRow key={extractionDetail?.id}>
             <TableCell>
-              <Text>{extractionDetail?.ext1}</Text>
+              <Text>{detail.ext2}</Text>
             </TableCell>
-          </TableRow>
+            <TableCell>
+              <Text>{detail.ext3}</Text>
+            </TableCell>
+            <TableCell>
+              <Text>{detail.ext4}</Text>
+            </TableCell>
+            <TableCell>
+              <Text>{detail.ext5}</Text>
+            </TableCell>
+         </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
