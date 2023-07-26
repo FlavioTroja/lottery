@@ -27,18 +27,24 @@ export interface ExtractionDetail {
   extraction_id: number;
 }
 
-export default async function ExtractionsTable({ extraction }: { extraction?: Extraction }) {
+export default async function ExtractionDetailsTable({ extractionDetail }: { extractionDetail?: ExtractionDetail }) {
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>{extraction?.label}</TableHeaderCell>
+          <TableHeaderCell>{extractionDetail?.city}</TableHeaderCell>
+          <TableHeaderCell>{extractionDetail?.ext1}</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
-          <TableRow key={extraction?.id}>
+          <TableRow key={extractionDetail?.id}>
             <TableCell>
-              <Text>{extraction?.label}</Text>
+              <Text>{extractionDetail?.city}</Text>
+            </TableCell>
+          </TableRow>
+          <TableRow key={extractionDetail?.id}>
+            <TableCell>
+              <Text>{extractionDetail?.ext1}</Text>
             </TableCell>
           </TableRow>
       </TableBody>

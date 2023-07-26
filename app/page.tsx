@@ -1,7 +1,7 @@
 import { Card, Title, Text } from '@tremor/react';
 import { queryBuilder } from '../lib/planetscale';
 import Search from './search';
-import ExtractionsTable from './table';
+import ExtractionDetailsTable from './table';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,15 @@ export default async function IndexPage({
   const extraction = await queryBuilder
     .selectFrom('extractions')
     .select(['id', 'date', 'code', 'label'])
-    .where('code', 'like', `%${search}%`)
-    .orderBy('date')
-    .executeTakeFirst();
+    .orderBy('date', 'desc')
+    .executeTakeFirstOrThrow();
+
+  const extractionDetail = await queryBuilder
+    .selectFrom('extractionDetails')
+    .select(['id', 'city', 'ext1', 'ext2', 'ext3', 'ext4', 'ext5', 'extraction_id'])
+    .where('extraction_id', '=', extraction.id)
+    .where('city', 'like', `%${search}%`)
+    .execute();
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
@@ -26,7 +32,7 @@ export default async function IndexPage({
       </Text>
       <Search />
       <Card className="mt-6">
-        <ExtractionsTable extraction={extraction} />
+        <ExtractionDetailsTable extractionDetail={extractionDetail} />
       </Card>
     </main>
   );

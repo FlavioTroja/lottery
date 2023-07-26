@@ -5,18 +5,25 @@ import { queryBuilder, Extraction } from '../lib/planetscale';
 
 export async function findByCode(code: string) {    
     
-    const result = await queryBuilder
+    return await queryBuilder
     .selectFrom('extractions')
     .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', code)
     .executeTakeFirst();
+}
+
+export async function findLast() {    
     
-    return result;
+    return await queryBuilder
+    .selectFrom('extractions')
+    .select(['id', 'date', 'code', 'label'])
+    .orderBy('date', 'desc')
+    .executeTakeFirst();
 }
 
 export async function create(extraction: Extraction) {    
     
-    const result = await queryBuilder
+    return await queryBuilder
     .insertInto('extractions')
     .values({
         code: extraction.code,
@@ -24,6 +31,4 @@ export async function create(extraction: Extraction) {
         label: extraction.label
       })
       .executeTakeFirst();
-
-      return result;
 }

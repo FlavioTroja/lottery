@@ -29,9 +29,15 @@ export default async function handler(req, res) {
         headers: myHeaders
     };
     
-    const yearQuery = 2023;
-    const extQuery = 80;
-    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${yearQuery}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
+    //const yearQuery = 2023;
+    //const extQuery = 1;
+    const last = await extraction.findLast();
+    let [ extQuery, yearQuery ] = last.code.split("/");
+
+    extQuery = !!extQuery ? +extQuery + 1 : 1;
+    yearQuery = yearQuery || 2023;
+
+    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
@@ -51,28 +57,33 @@ export default async function handler(req, res) {
       console.log(`${label.match(/\d+\/\d+\/\d+/g) ?? ''} - Element ${extQuery}/${yearQuery} not found.`);
 
       const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
-      const [day, month, year] = stringDate?.toString().split('/');
+      const [ day, month, year ] = stringDate?.toString().split('/');
       const date = new Date(+year, +month - 1, +day);
 
       const saved = await extraction.create({
-        code: `${extQuery}/${yearQuery}`,
-        date,
-        label
+         code: `${extQuery}/${yearQuery}`,
+         date,
+         label
       });
 
-      console.log("SAVED: " + saved.insertId);
-      console.log("ESTAZIONI:" + $('table.tabella_d'));
+      const exts = $('table.tabella_d tr').map((i, x) => {
+        const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => $(ff).text()).toArray();
+        return {
+          code: `R${i}`,
+          city: $(x).children(`th#R${i}`).text(),
+          ext1,
+          ext2,
+          ext3,
+          ext4,
+          ext5, 
+          extraction_id: saved.insertId
+        };
+      }).toArray();
+      console.log(exts);
 
-      // await extractionDetail.create({
-      //   code: `${extQuery}/${yearQuery}`,
-      //   city,
-      //   ext1,
-      //   ext2,
-      //   ext3, 
-      //   ext4,
-      //   ext5,
-      //   extraction_id: saved.insertId
-      // });
+      for (let i = 0; i < exts.length; i++) {
+        await extractionDetail.create(exts[i]);
+      }
     }
 
     return res.status(200).json(label);
