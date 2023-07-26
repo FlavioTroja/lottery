@@ -13,18 +13,18 @@ export interface Extraction {
   date: Date;
   code: string;
   label: string;
-  details?: string[];
 }
 
-interface ExtractionDetail {
+export interface ExtractionDetail {
   id: Generated<number>;
   code: string;
   city: string;
-  ext1: string;
-  ext2: string;
-  ext3: string;
-  ext4: string;
-  ext5: string;
+  ext1: number;
+  ext2: number;
+  ext3: number;
+  ext4: number;
+  ext5: number;
+  extraction_id: number;
 }
 
 export interface Database {

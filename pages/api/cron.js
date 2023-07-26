@@ -1,5 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as extraction from '../../services/extraction.service.tsx';
+import * as extractionDetail from '../../services/extractionDetail.service.tsx';
+
 
 export default async function handler(req, res) {    
 
@@ -28,7 +30,7 @@ export default async function handler(req, res) {
     };
     
     const yearQuery = 2023;
-    const extQuery = 78;
+    const extQuery = 80;
     const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${yearQuery}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
@@ -55,20 +57,22 @@ export default async function handler(req, res) {
       const saved = await extraction.create({
         code: `${extQuery}/${yearQuery}`,
         date,
-        label, 
-        details: [{
-          code: "R1",
-          city: "ANDRIA",
-          ext1: 12,
-          ext2: 12,
-          ext3: 12,
-          ext4: 12,
-          ext5: 12
-        }]
+        label
       });
 
-      console.log(JSON.stringify(saved, null, 4));
-      console.log("ESTAZIONI:" + $('table.tabella_d').text());
+      console.log("SAVED: " + saved.insertId);
+      console.log("ESTAZIONI:" + $('table.tabella_d'));
+
+      // await extractionDetail.create({
+      //   code: `${extQuery}/${yearQuery}`,
+      //   city,
+      //   ext1,
+      //   ext2,
+      //   ext3, 
+      //   ext4,
+      //   ext5,
+      //   extraction_id: saved.insertId
+      // });
     }
 
     return res.status(200).json(label);

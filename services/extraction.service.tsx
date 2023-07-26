@@ -10,9 +10,7 @@ export async function findByCode(code: string) {
     .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', code)
     .executeTakeFirst();
-
-    console.log(result);
-
+    
     return result;
 }
 
@@ -23,12 +21,9 @@ export async function create(extraction: Extraction) {
     .values({
         code: extraction.code,
         date: extraction.date,
-        label: extraction.label,
-        details: extraction.details
+        label: extraction.label
       })
       .executeTakeFirst();
-
-      console.log(result);
 
       return result;
 }

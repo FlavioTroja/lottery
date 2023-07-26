@@ -13,19 +13,19 @@ export interface Extraction {
   date: Date;
   code: string;
   label: string;
-  details?: string;
 }
 
-// export interface ExtractionDetail {
-//   id?: number;
-//   code: string;
-//   city: string;
-//   ext1: string;
-//   ext2: string;
-//   ext3: string;
-//   ext4: string;
-//   ext5: string;
-// }
+export interface ExtractionDetail {
+  id?: number;
+  code: string;
+  city: string;
+  ext1: number;
+  ext2: number;
+  ext3: number;
+  ext4: number;
+  ext5: number;
+  extraction_id: number;
+}
 
 export default async function ExtractionsTable({ extraction }: { extraction?: Extraction }) {
   return (
