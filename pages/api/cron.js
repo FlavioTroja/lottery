@@ -2,9 +2,7 @@ import * as cheerio from 'cheerio';
 import * as extraction from '../../services/extraction.service.tsx';
 import * as extractionDetail from '../../services/extractionDetail.service.tsx';
 
-
 export default async function handler(req, res) {    
-
     let myHeaders = new Headers();
     myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0");
     myHeaders.append("Accept", "*/*");
@@ -29,16 +27,23 @@ export default async function handler(req, res) {
         headers: myHeaders
     };
     
-    let [ extQuery, yearQuery ] = [0, 2023];
+    let [ extQuery, yearQuery ] = [req.query.ext ?? 0, req.query.year ?? new Date().getFullYear()];
 
-    const last = await extraction.findLast();
+    if (!req.query.ext && !req.query.year) {
+      const last = await extraction.findLast();
 
-    if (last) {
-      [ extQuery, yearQuery ] = last?.code?.split("/");
+      if (last) {
+        [ extQuery, yearQuery ] = last?.code?.split("/");
+      }
+
+      extQuery = !!extQuery ? +extQuery + 1 : 1;
+      yearQuery = yearQuery || new Date().getFullYear();
     }
 
-    extQuery = !!extQuery ? +extQuery + 1 : 1;
-    yearQuery = yearQuery || 2023;
+    const found = await extraction.findByCode(`${extQuery}/${yearQuery}`);
+    if (found) {
+      return res.status(201).json('Estrazione già presente');
+    }
 
     const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
@@ -51,41 +56,40 @@ export default async function handler(req, res) {
     }
    
     const page = await response.text();
-    
     const $ = cheerio.load(page);
+
+    if ($('div.error').text() === 'Non ci sono estrazioni') {
+      return res.status(404).json('Non ci sono estrazioni');
+    }
+
     const label = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
 
-    const found = await extraction.findByCode(`${extQuery}/${yearQuery}`);
-    if(!found) {
-      console.log(`${label.match(/\d+\/\d+\/\d+/g) ?? ''} - Element ${extQuery}/${yearQuery} not found.`);
+    const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
+    const [ day, month, year ] = stringDate?.toString().split('/');
+    const date = new Date(+year, +month - 1, +day);
 
-      const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
-      const [ day, month, year ] = stringDate?.toString().split('/');
-      const date = new Date(+year, +month - 1, +day);
+    const saved = await extraction.create({
+        code: `${extQuery}/${yearQuery}`,
+        date,
+        label
+    });
 
-      const saved = await extraction.create({
-         code: `${extQuery}/${yearQuery}`,
-         date,
-         label
-      });
+    const exts = $('table.tabella_d tr').map((i, x) => {
+      const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => $(ff).text()).toArray();
+      return {
+        code: `R${i}`,
+        city: $(x).children(`th#R${i}`).text(),
+        ext1,
+        ext2,
+        ext3,
+        ext4,
+        ext5, 
+        extraction_id: saved.insertId
+      };
+    }).toArray();
 
-      const exts = $('table.tabella_d tr').map((i, x) => {
-        const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => $(ff).text()).toArray();
-        return {
-          code: `R${i}`,
-          city: $(x).children(`th#R${i}`).text(),
-          ext1,
-          ext2,
-          ext3,
-          ext4,
-          ext5, 
-          extraction_id: saved.insertId
-        };
-      }).toArray();
-
-      for (let i = 0; i < exts.length; i++) {
-        await extractionDetail.create(exts[i]);
-      }
+    for (let i = 0; i < exts.length; i++) {
+      await extractionDetail.create(exts[i]);
     }
 
     return res.status(200).json(label);
