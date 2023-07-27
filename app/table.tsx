@@ -32,12 +32,12 @@ export default async function ExtractionDetailsTable({ details }: { details: Ext
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>Città</TableHeaderCell>
-          <TableHeaderCell>Primo Estratto</TableHeaderCell>
-          <TableHeaderCell>Secondo Estratto</TableHeaderCell>
-          <TableHeaderCell>Terzo Estratto</TableHeaderCell>
-          <TableHeaderCell>Quarto Estratto</TableHeaderCell>
-          <TableHeaderCell>Quinto Estratto</TableHeaderCell>
+          <TableHeaderCell>Ruota</TableHeaderCell>
+          <TableHeaderCell>1° Estratto</TableHeaderCell>
+          <TableHeaderCell>2° Estratto</TableHeaderCell>
+          <TableHeaderCell>3° Estratto</TableHeaderCell>
+          <TableHeaderCell>4° Estratto</TableHeaderCell>
+          <TableHeaderCell>5° Estratto</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
