@@ -2,7 +2,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 (async function() {
 
-    const year = 2020;
+    const year = 2019;
     
     try {
         console.log("Starting iterate process @ ");
