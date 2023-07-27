@@ -21,6 +21,14 @@ export async function findLast() {
     .executeTakeFirst();
 }
 
+export async function count() {    
+    
+    return await queryBuilder
+    .selectFrom('extractions')
+    .select([e => e.fn.count<number>('id').as('num')])
+    .executeTakeFirst();
+}
+
 export async function create(extraction: Extraction) {    
     
     return await queryBuilder
