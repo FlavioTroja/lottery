@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
-import * as lotto from '../../services/lotto.service';
-import * as lottodetail from '../../services/lottodetail.service';
-import { LottoDetail } from '../../lib/planetscale';
+import * as millionday from '../../services/millionday.service';
+import * as milliondaydetail from '../../services/milliondaydetail.service';
+import { MillionDay, MillionDayDetail } from '../../lib/planetscale';
 
 export default async function handler(req: any, res: any) {    
     let myHeaders = new Headers();
@@ -12,16 +12,13 @@ export default async function handler(req: any, res: any) {
     myHeaders.append("X-Requested-With", "XMLHttpRequest");
     myHeaders.append("Content-Type", "text/plain;charset=UTF-8");
     myHeaders.append("Content-Length", "0");
-    myHeaders.append("Origin", "https://www.adm.gov.it");
     myHeaders.append("Connection", "keep-alive");
-    myHeaders.append("Referer", "https://www.adm.gov.it/portale/monopoli/giochi/gioco-del-lotto/lotto_g/lotto_estr?prog=76&anno=2023");
     myHeaders.append("Sec-Fetch-Dest", "empty");
     myHeaders.append("Sec-Fetch-Mode", "cors");
     myHeaders.append("Sec-Fetch-Site", "same-origin");
     myHeaders.append("Sec-GPC", "1");
     myHeaders.append("Pragma", "no-cache");
     myHeaders.append("Cache-Control", "no-cache");
-    myHeaders.append("Cookie", "JSESSIONID=4AoevmiqKR1iaePlzMid3t18Iuxa_EK3GV1ArieN.node8; GUEST_LANGUAGE_ID=it_IT; COOKIE_SUPPORT=true");
 
     const requestOptions = {
         method: 'POST',
@@ -31,7 +28,7 @@ export default async function handler(req: any, res: any) {
     let [ extQuery, yearQuery ] = [req.query.ext ?? 0, req.query.year ?? new Date().getFullYear()];
 
     if (!req.query.ext && !req.query.year) {
-      const last = await lotto.findLast();
+      const last = await millionday.findLast();
 
       if (last) {
         [ extQuery, yearQuery ] = last?.code?.split("/");
@@ -41,12 +38,12 @@ export default async function handler(req: any, res: any) {
       yearQuery = yearQuery || new Date().getFullYear();
     }
 
-    const found = await lotto.findByCode(`${extQuery}/${yearQuery}`);
+    const found = await millionday.findByCode(`${extQuery}/${yearQuery}`);
     if (found) {
       return res.status(201).json('Estrazione già presente');
     }
 
-    const response = await fetch(`${process.env.LOTTO_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
+    const response = await fetch(`${process.env.MILLIONDAY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
@@ -63,34 +60,49 @@ export default async function handler(req: any, res: any) {
       return res.status(404).json('Non ci sono estrazioni');
     }
 
-    const label: string = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
+    const label: string = JSON.parse($('div#cmsTiTrovi').text().replaceAll("'","\""))?.breadcrumb[0]?.label ?? '';
 
     const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
     const [ day, month, year ] = stringDate?.toString().split('/');
     const date = new Date(+year, +month - 1, +day);
 
-    const saved = await lotto.create({
+    const saved = await millionday.create({
         code: `${extQuery}/${yearQuery}`,
         date,
         label
-    });
+    } as MillionDay);
 
-    const exts: LottoDetail[] = $('table.tabella_d tr').map((i, x) => {
-      const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => Number.parseInt($(ff).text())).toArray();
-      return {
-        code: `R${i}`,
-        city: $(x).children(`th#R${i}`).text(),
+    const arr = $('div.estrazioni').children('p').map((i,p) => Number.parseInt($(p).text().trim())).toArray();
+    console.log(arr.slice(0, 5));
+    console.log(arr.slice(5, 10));
+    let [ ext1, ext2, ext3, ext4, ext5 ] = arr.slice(0, 5);
+
+    let exts = [
+      {
+        type: "PRIMARY",
         ext1,
         ext2,
         ext3,
         ext4,
         ext5, 
         parent_id: Number(saved.insertId)
-      } as LottoDetail;
-    }).toArray();
+      } as MillionDayDetail];
+
+      if(arr.slice(5, 10).length > 0) {
+        [ ext1, ext2, ext3, ext4, ext5 ] = arr.slice(5, 10);
+        exts = [ ...exts, {
+          type: "EXTRA",
+          ext1,
+          ext2,
+          ext3,
+          ext4,
+          ext5, 
+          parent_id: Number(saved.insertId)
+        } as MillionDayDetail ];
+      }
 
     for (let i = 0; i < exts.length; i++) {
-      await lottodetail.create(exts[i]);
+      await milliondaydetail.create(exts[i]);
     }
 
     return res.status(200).json(label);
