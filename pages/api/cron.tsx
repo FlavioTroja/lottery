@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
-import * as extraction from '../../services/extraction.service.tsx';
-import * as extractionDetail from '../../services/extractionDetail.service.tsx';
+import * as lotto from '../../services/lotto.service';
+import * as lottodetail from '../../services/lottodetail.service';
+import { LottoDetail } from '../../lib/planetscale';
 
-export default async function handler(req, res) {    
+export default async function handler(req: any, res: any) {    
     let myHeaders = new Headers();
     myHeaders.append("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0");
     myHeaders.append("Accept", "*/*");
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
     let [ extQuery, yearQuery ] = [req.query.ext ?? 0, req.query.year ?? new Date().getFullYear()];
 
     if (!req.query.ext && !req.query.year) {
-      const last = await extraction.findLast();
+      const last = await lotto.findLast();
 
       if (last) {
         [ extQuery, yearQuery ] = last?.code?.split("/");
@@ -40,12 +41,12 @@ export default async function handler(req, res) {
       yearQuery = yearQuery || new Date().getFullYear();
     }
 
-    const found = await extraction.findByCode(`${extQuery}/${yearQuery}`);
+    const found = await lotto.findByCode(`${extQuery}/${yearQuery}`);
     if (found) {
       return res.status(201).json('Estrazione già presente');
     }
 
-    const response = await fetch(`${process.env.LOTTERY_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
+    const response = await fetch(`${process.env.LOTTO_URL}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_anno=${(yearQuery)}&_it_sogei_wda_web_portlet_WebDisplayAamsPortlet_prog=${extQuery}`, requestOptions);
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
    
@@ -62,20 +63,20 @@ export default async function handler(req, res) {
       return res.status(404).json('Non ci sono estrazioni');
     }
 
-    const label = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
+    const label: string = JSON.parse($('div#cmsTiTrovi').text())?.breadcrumb[0]?.label ?? '';
 
     const stringDate = label.match(/\d{2}\/\d{2}\/\d{4}/g) ?? '';
     const [ day, month, year ] = stringDate?.toString().split('/');
     const date = new Date(+year, +month - 1, +day);
 
-    const saved = await extraction.create({
+    const saved = await lotto.create({
         code: `${extQuery}/${yearQuery}`,
         date,
         label
     });
 
-    const exts = $('table.tabella_d tr').map((i, x) => {
-      const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => $(ff).text()).toArray();
+    const exts: LottoDetail[] = $('table.tabella_d tr').map((i, x) => {
+      const [ ext1, ext2, ext3, ext4, ext5 ] = $(x).children(`td[headers='R${i}']`).map((ee, ff) => Number.parseInt($(ff).text())).toArray();
       return {
         code: `R${i}`,
         city: $(x).children(`th#R${i}`).text(),
@@ -84,12 +85,12 @@ export default async function handler(req, res) {
         ext3,
         ext4,
         ext5, 
-        extraction_id: saved.insertId
-      };
+        parent_id: Number(saved.insertId)
+      } as LottoDetail;
     }).toArray();
 
     for (let i = 0; i < exts.length; i++) {
-      await extractionDetail.create(exts[i]);
+      await lottodetail.create(exts[i]);
     }
 
     return res.status(200).json(label);

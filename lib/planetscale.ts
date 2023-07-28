@@ -8,15 +8,15 @@ interface User {
   email: string;
 }
 
-export interface Extraction {
-  id: Generated<number>;
+export interface Lotto {
+  id?: Generated<number>;
   date: Date;
   code: string;
   label: string;
 }
 
-export interface ExtractionDetail {
-  id: Generated<number>;
+export interface LottoDetail {
+  id?: Generated<number>;
   code: string;
   city: string;
   ext1: number;
@@ -24,13 +24,13 @@ export interface ExtractionDetail {
   ext3: number;
   ext4: number;
   ext5: number;
-  extraction_id: number;
+  parent_id: number;
 }
 
 export interface Database {
   users: User;
-  extractions: Extraction;
-  extractionDetails: ExtractionDetail;
+  lotto: Lotto;
+  lottodetail: LottoDetail;
   // https://github.com/nextauthjs/next-auth/issues/4922
 }
 

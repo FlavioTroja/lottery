@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, ExtractionDetail } from '../lib/planetscale';
+import { queryBuilder, LottoDetail } from '../lib/planetscale';
 
 export async function findOccurenceByExt(ext: string, city?: string) {    
   const { ref } = queryBuilder.dynamic;
@@ -8,7 +8,7 @@ export async function findOccurenceByExt(ext: string, city?: string) {
   type ExtPossibleColumns = 'ext1' | 'ext2' | 'ext3' | 'ext4' | 'ext5';
 
   const ext1 = await queryBuilder
-  .selectFrom('extractionDetails')
+  .selectFrom('lottodetail')
   .select([
       ref<ExtPossibleColumns>(ext), 
       ed => ed.fn.count(ref<ExtPossibleColumns>(ext)).as('occ')])
@@ -16,10 +16,10 @@ export async function findOccurenceByExt(ext: string, city?: string) {
   .execute();
 }
 
-export async function create(detail: ExtractionDetail) {    
+export async function create(detail: LottoDetail) {    
     
     return await queryBuilder
-    .insertInto('extractionDetails')
+    .insertInto('lottodetail')
     .values({
         code: detail.code,
         city: detail.city,
@@ -28,7 +28,7 @@ export async function create(detail: ExtractionDetail) {
         ext3: detail.ext3,
         ext4: detail.ext4,
         ext5: detail.ext5,
-        extraction_id: detail.extraction_id
+        parent_id: detail.parent_id
       })
       .executeTakeFirst();
 }
