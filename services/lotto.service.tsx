@@ -63,17 +63,17 @@ export async function createDetail(detail: LottoDetail) {
 
 // OCCURRENCE
 
-    export async function findOccurencesByExt(ext: number, city?: string) {    
+    export async function findOccurence(ext: number, city: string) {    
    
         return await queryBuilder
         .selectFrom('lottooccurrence')
         .select(['id', 'date', 'ext', 'city', 'occurrence'])
         .where('ext', '=', ext)
         .where('city', 'like', `${city}`)
-        .execute();
+        .executeTakeFirst();
     }
 
-    export async function updateOccurrence(id: number, occurrence: number, date: string) {    
+    export async function updateOccurrence(id: number | undefined, occurrence: number, date: string) {    
    
         return await queryBuilder
         .updateTable('lottooccurrence')
