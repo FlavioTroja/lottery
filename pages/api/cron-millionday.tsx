@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import * as millionday from '../../services/millionday.service';
-import * as milliondaydetail from '../../services/milliondaydetail.service';
+import * as milliondaydetail from '../../services/millionday.service';
 import { MillionDay, MillionDayDetail } from '../../lib/planetscale';
 
 export default async function handler(req: any, res: any) {    
@@ -102,7 +102,7 @@ export default async function handler(req: any, res: any) {
       }
 
     for (let i = 0; i < exts.length; i++) {
-      await milliondaydetail.create(exts[i]);
+      await milliondaydetail.createDetail(exts[i]);
     }
 
     return res.status(200).json(label);

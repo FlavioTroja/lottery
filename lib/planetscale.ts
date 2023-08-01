@@ -27,6 +27,14 @@ export interface LottoDetail {
   parent_id: number;
 }
 
+export interface LottoOccurrence {
+  id?: Generated<number>;
+  date: string;
+  ext: number;
+  city: string;
+  occurrence: number;
+}
+
 export interface Lotto10 {
   id?: Generated<number>;
   date: Date;
@@ -68,6 +76,7 @@ export interface Database {
   users: User;
   lotto: Lotto;
   lottodetail: LottoDetail;
+  lottooccurrence: LottoOccurrence;
   lotto10: Lotto10;
   lotto10detail: Lotto10Detail;
   millionday: MillionDay;

@@ -1,6 +1,5 @@
 import * as cheerio from 'cheerio';
 import * as lotto from '../../services/lotto.service';
-import * as lottodetail from '../../services/lottodetail.service';
 import { LottoDetail } from '../../lib/planetscale';
 
 export default async function handler(req: any, res: any) {    
@@ -87,7 +86,7 @@ export default async function handler(req: any, res: any) {
     }).toArray();
 
     for (let i = 0; i < exts.length; i++) {
-      await lottodetail.create(exts[i]);
+      await lotto.createDetail(exts[i]);
     }
 
     return res.status(200).json(label);

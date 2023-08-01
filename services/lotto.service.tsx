@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, Lotto } from '../lib/planetscale';
+import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/planetscale';
 
 export async function findByCode(code: string) {    
     
@@ -39,3 +39,61 @@ export async function create(lotto: Lotto) {
       })
       .executeTakeFirst();
 }
+
+
+// DETAIL
+  
+export async function createDetail(detail: LottoDetail) {    
+    
+    return await queryBuilder
+    .insertInto('lottodetail')
+    .values({
+        code: detail.code,
+        city: detail.city,
+        ext1: detail.ext1,
+        ext2: detail.ext2,
+        ext3: detail.ext3,
+        ext4: detail.ext4,
+        ext5: detail.ext5,
+        parent_id: detail.parent_id
+    })
+    .executeTakeFirst();
+}
+  
+
+// OCCURRENCE
+
+    export async function findOccurencesByExt(ext: number, city?: string) {    
+   
+        return await queryBuilder
+        .selectFrom('lottooccurrence')
+        .select(['id', 'date', 'ext', 'city', 'occurrence'])
+        .where('ext', '=', ext)
+        .where('city', 'like', `${city}`)
+        .execute();
+    }
+
+    export async function updateOccurrence(id: number, occurrence: number, date: string) {    
+   
+        return await queryBuilder
+        .updateTable('lottooccurrence')
+        .set({
+            occurrence,
+            date
+        })
+        .where('id', '=', id)
+        .executeTakeFirst()
+    }
+
+    export async function createOccurence(occ: LottoOccurrence) {    
+    
+        return await queryBuilder
+        .insertInto('lottooccurrence')
+        .values({
+            ext: occ.ext,
+            city: occ.city,
+            date: occ.date,
+            occurrence: occ.occurrence
+        })
+        .executeTakeFirst();
+    }

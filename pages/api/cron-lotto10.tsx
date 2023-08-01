@@ -1,6 +1,5 @@
 import * as cheerio from 'cheerio';
 import * as lotto from '../../services/lotto.service';
-import * as lottodetail from '../../services/lottodetail.service';
 import { LottoDetail } from '../../lib/planetscale';
 
 export default async function handler(req: any, res: any) {    

@@ -11,7 +11,7 @@
   
       "path": "/api/cron-millionday",
   
-      "schedule": "2 20 * * *"
+      "schedule": "30 20 * * *"
   
     }]
     
