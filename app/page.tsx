@@ -1,7 +1,7 @@
 import { Card, Title, Text } from '@tremor/react';
 import { queryBuilder } from '../lib/planetscale';
 import Search from './search';
-import ExtractionDetailsTable from './table';
+import LottoDetailTable from './table';
 
 export default async function IndexPage({
   searchParams
@@ -9,16 +9,16 @@ export default async function IndexPage({
   searchParams: { q: string };
 }) {
   const search = searchParams.q ?? '';
-  const extraction = await queryBuilder
-    .selectFrom('extractions')
+  const lotto = await queryBuilder
+    .selectFrom('lotto')
     .select(['id', 'date', 'code', 'label'])
     .orderBy('date', 'desc')
     .executeTakeFirstOrThrow();
 
   const details = await queryBuilder
-    .selectFrom('extractionDetails')
-    .select(['id', 'code', 'city', 'ext1', 'ext2', 'ext3', 'ext4', 'ext5', 'extraction_id'])
-    .where('extraction_id', '=', extraction.id)
+    .selectFrom('lottodetail')
+    .select(['id', 'code', 'city', 'ext1', 'ext2', 'ext3', 'ext4', 'ext5', 'parent_id'])
+    .where('parent_id', '=', lotto?.id ?? 0)
     .where('city', 'like', `%${search}%`)
     .execute();
 
@@ -26,11 +26,11 @@ export default async function IndexPage({
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
       <Title>Lotto</Title>
       <Text>
-        {extraction?.label}
+        {lotto?.label}
       </Text>
       <Search />
       <Card className="mt-6">
-        <ExtractionDetailsTable details={details} />
+        <LottoDetailTable details={details} />
       </Card>
     </main>
   );

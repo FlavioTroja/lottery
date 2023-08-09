@@ -4,20 +4,55 @@ import { Card, AreaChart, Title, Text } from '@tremor/react';
 
 const data = [
   {
-    Month: 'Jan 21',
-    Sales: 2890,
-    Profit: 2400
+    Month: '1',
+    Sales: 289,
+    Profit: 24
   },
   {
-    Month: 'Feb 21',
-    Sales: 1890,
-    Profit: 1398
+    Month: '2',
+    Sales: 189,
+    Profit: 13
   },
   {
-    Month: 'Jan 22',
-    Sales: 3890,
-    Profit: 2980
-  }
+    Month: '3',
+    Sales: 389,
+    Profit: 49
+  },
+  {
+    Month: '4',
+    Sales: 180,
+    Profit: 22
+  },
+  {
+    Month: '5',
+    Sales: 30,
+    Profit: 2
+  },
+  {
+    Month: '6',
+    Sales: 189,
+    Profit: 19
+  },
+  {
+    Month: '7',
+    Sales: 89,
+    Profit: 12
+  },
+  {
+    Month: '8',
+    Sales: 109,
+    Profit: 20
+  },
+  {
+    Month: '9',
+    Sales: 160,
+    Profit: 21
+  },
+  {
+    Month: '10',
+    Sales: 165,
+    Profit: 22
+  }  
 ];
 
 export default function Example() {
@@ -32,7 +67,7 @@ export default function Example() {
         index="Month"
         colors={['indigo', 'fuchsia']}
         valueFormatter={(number: number) =>
-          `$ ${Intl.NumberFormat('us').format(number).toString()}`
+          `$ ${Intl.NumberFormat('it').format(number).toString()}`
         }
       />
     </Card>

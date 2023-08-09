@@ -8,14 +8,14 @@ import {
   Text
 } from '@tremor/react';
 
-export interface Extraction {
+export interface Lotto {
   id?: number;
   date: Date;
   code: string;
   label: string;
 }
 
-export interface ExtractionDetail {
+export interface LottoDetail {
   id?: number;
   code: string;
   city: string;
@@ -24,10 +24,10 @@ export interface ExtractionDetail {
   ext3: number;
   ext4: number;
   ext5: number;
-  extraction_id: number;
+  parent_id: number;
 }
 
-export default async function ExtractionDetailsTable({ details }: { details: ExtractionDetail[] }) {
+export default async function LottoDetailTable({ details }: { details: LottoDetail[] }) {
   return (
     <Table>
       <TableHead>

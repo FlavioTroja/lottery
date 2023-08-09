@@ -2,10 +2,17 @@
 
     "crons": [{
   
-      "path": "/api/cron",
+      "path": "/api/cron-lotto",
   
       "schedule": "0 20 * * *"
   
-    }]
+    },
+    {
   
+      "path": "/api/cron-millionday",
+  
+      "schedule": "30 20 * * *"
+  
+    }]
+    
   }

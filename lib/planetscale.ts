@@ -8,15 +8,15 @@ interface User {
   email: string;
 }
 
-export interface Extraction {
-  id: Generated<number>;
+export interface Lotto {
+  id?: Generated<number>;
   date: Date;
   code: string;
   label: string;
 }
 
-export interface ExtractionDetail {
-  id: Generated<number>;
+export interface LottoDetail {
+  id?: Generated<number>;
   code: string;
   city: string;
   ext1: number;
@@ -24,13 +24,63 @@ export interface ExtractionDetail {
   ext3: number;
   ext4: number;
   ext5: number;
-  extraction_id: number;
+  parent_id: number;
+}
+
+export interface LottoOccurrence {
+  id?: Generated<number>;
+  date: string;
+  ext: number;
+  city: string;
+  occurrence: number;
+}
+
+export interface Lotto10 {
+  id?: Generated<number>;
+  date: Date;
+  code: string;
+  label: string;
+}
+
+export interface Lotto10Detail {
+  id?: Generated<number>;
+  code: string;
+  city: string;
+  ext1: number;
+  ext2: number;
+  ext3: number;
+  ext4: number;
+  ext5: number;
+  parent_id: number;
+}
+
+export interface MillionDay {
+  id?: Generated<number>;
+  date: Date;
+  code: string;
+  label: string;
+}
+
+export interface MillionDayDetail {
+  id?: Generated<number>;
+  type: string;
+  ext1: number;
+  ext2: number;
+  ext3: number;
+  ext4: number;
+  ext5: number;
+  parent_id: number;
 }
 
 export interface Database {
   users: User;
-  extractions: Extraction;
-  extractionDetails: ExtractionDetail;
+  lotto: Lotto;
+  lottodetail: LottoDetail;
+  lottooccurrence: LottoOccurrence;
+  lotto10: Lotto10;
+  lotto10detail: Lotto10Detail;
+  millionday: MillionDay;
+  milliondaydetail: MillionDayDetail;
   // https://github.com/nextauthjs/next-auth/issues/4922
 }
 
