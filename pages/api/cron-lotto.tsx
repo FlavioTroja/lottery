@@ -89,5 +89,8 @@ export default async function handler(req: any, res: any) {
       await lotto.createDetail(exts[i]);
     }
 
+    // update occurrence
+    await lotto.syncOccurenceByLottoId(Number(saved.insertId)); 
+
     return res.status(200).json(label);
 }
