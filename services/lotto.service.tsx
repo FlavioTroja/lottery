@@ -1,7 +1,4 @@
-'use server'
-
 import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/planetscale';
-import * as utils from './utils.service';
 export async function findByCode(code: string) {    
     
     return await queryBuilder
@@ -46,7 +43,7 @@ export async function create(lotto: Lotto) {
         date: lotto.date,
         label: lotto.label
       })
-      .executeTakeFirst();
+    .executeTakeFirst();
 }
 
 
@@ -79,6 +76,29 @@ export async function createDetail(detail: LottoDetail) {
         .where('ext', '=', ext)
         .where('city', 'like', `${city}`)
         .executeTakeFirst();
+    }
+
+    export async function aggregateOccurrence(city?: string) {
+        if (!!city) {
+            return await queryBuilder
+                .selectFrom('lottooccurrence')
+                .select(['date', 'ext', 'occurrence'])
+                .where('city', 'like', `${city}`)
+                .orderBy('ext')
+                .execute();         
+        }
+
+        const occs = await queryBuilder
+            .selectFrom('lottooccurrence')
+            .select(['date', 'ext', 'city', 'occurrence'])
+            .orderBy('ext')
+            .execute();     
+        
+        return occs.map(occ => ({
+            date: occs.filter(({ext}) => ext === occ.ext).reduce((acc, cur) => acc + cur.date, ''),
+            ext: occ.ext,
+            occurrence: occs.filter(({ext}) => ext === occ.ext).reduce((acc, cur) => acc + cur.occurrence, 0)
+        }));
     }
 
     export async function updateOccurrence(id: number | undefined, occurrence: number, date: string) {    

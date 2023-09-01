@@ -72,12 +72,37 @@ export interface MillionDayDetail {
   parent_id: number;
 }
 
+export interface Lotto10_5 {
+  id?: Generated<number>;
+  code: string;
+  date: number;
+  progressive_daily: number;
+  maximum_progressive_daily?: number;
+  numbers: string;
+  numbers_overtime: string;
+  special_number: number;
+  double_special_number: number;
+  gong_number: number;
+}
+
+export interface Lotto10_5Occurrence {
+  id?: Generated<number>;
+  date: string;
+  ext: number;
+  wheel: string;
+  occurrence: number;
+  special_number: string;
+  double_special_number: string;
+  gong_number: string;
+}
+
 export interface Database {
   users: User;
   lotto: Lotto;
   lottodetail: LottoDetail;
   lottooccurrence: LottoOccurrence;
   lotto10: Lotto10;
+  lotto10_5: Lotto10_5;
   lotto10detail: Lotto10Detail;
   millionday: MillionDay;
   milliondaydetail: MillionDayDetail;
