@@ -75,7 +75,7 @@ export interface MillionDayDetail {
 export interface Lotto5 {
   id?: Generated<number>;
   code: string;
-  date: number;
+  date: Date;
   progressive_daily: number;
   maximum_progressive_daily?: number;
   numbers: string;

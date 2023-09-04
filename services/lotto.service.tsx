@@ -63,27 +63,7 @@ export async function createDetail(detail: LottoDetail) {
         parent_id: detail.parent_id
     })
     .executeTakeFirst();
-}
-
-// LOTTO5
-export async function createLotto5(lotto5: Lotto5) {    
-    
-    return await queryBuilder
-    .insertInto('lotto5')
-    .values({
-        code: lotto5.code,
-        date: lotto5.date,
-        progressive_daily: lotto5.progressive_daily,
-        maximum_progressive_daily: lotto5.maximum_progressive_daily,
-        numbers: lotto5.numbers,
-        numbers_overtime: lotto5.numbers_overtime,
-        special_number: lotto5.special_number,
-        double_special_number: lotto5.double_special_number,
-        gong_number: lotto5.gong_number
-    })
-    .executeTakeFirst();
-}
-  
+} 
 
 // OCCURRENCE
 
@@ -190,24 +170,3 @@ export async function createLotto5(lotto5: Lotto5) {
             await setOccurence(city, ext5, date.toString());
         }
     }
-
-    // export async function syncOccurenceByLotto5Id(lotto5Id: number) {    
-    //     const extraction = await queryBuilder
-    //         .selectFrom('lotto5')
-    //         .innerJoin('lottodetail', 'parent_id', 'lotto.id')
-    //         .select(['lotto.id as id', 'lotto.date as date', 'lotto.code as code', 
-    //         'lottodetail.city as city', 'lottodetail.ext1 as ext1', 'lottodetail.ext2 as ext2', 
-    //         'lottodetail.ext3 as ext3', 'lottodetail.ext4 as ext4', 'lottodetail.ext5 as ext5'])
-    //         .where('lotto.id', '=', lottoId)
-    //         .execute();
-        
-    //     for (let i = 0; i < extraction.length; i++) {
-    //         const {city, date, ext1, ext2, ext3, ext4, ext5} = extraction[i];
-    //         console.log(`${date} > ${city} - ${ext1}, ${ext2}, ${ext3}, ${ext4}, ${ext5}`);
-    //         await setOccurence(city, ext1, date.toString());
-    //         await setOccurence(city, ext2, date.toString());
-    //         await setOccurence(city, ext3, date.toString());
-    //         await setOccurence(city, ext4, date.toString());
-    //         await setOccurence(city, ext5, date.toString());
-    //     }
-    // }

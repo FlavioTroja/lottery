@@ -1,6 +1,5 @@
-import * as lotto from '../../services/lotto.service';
+import * as lotto5 from '../../services/lotto5.service';
 import { formattedDateQuery } from '../../services/utils.service';
-import {Datetime} from 'luxon';
 
 export default async function handler(req: any, res: any) {    
     
@@ -45,23 +44,10 @@ export default async function handler(req: any, res: any) {
     }
    
     const result = await response.json();
-  
 
-    console.log(JSON.stringify({
-      code: `${extQuery}/${yearQuery}`,
-      date: result.data,
-      progressive_daily: result.progressivoGiornaliero,
-      maximum_progressive_daily: result.massimoProgressivoGiornaliero,
-      numbers: result.numeriEstratti,
-      numbers_overtime: result.numeriEstrattiOvertime,
-      special_number: result.numeroSpeciale,
-      double_special_number: result.doppioNumeroSpeciale,
-      gong_number: result.numeroGongEstratto
- }, null, 4));
-
-    const saved = await lotto.createLotto5({
+    const saved = await lotto5.create({
          code: `${extQuery}/${yearQuery}`,
-         date: Datetime.fromMillis(result.data).toISO(),
+         date: new Date(result.data),
          progressive_daily: result.progressivoGiornaliero,
          maximum_progressive_daily: result.massimoProgressivoGiornaliero,
          numbers: JSON.stringify(Array.from(result.numeriEstratti)),
@@ -70,6 +56,8 @@ export default async function handler(req: any, res: any) {
          double_special_number: result.doppioNumeroSpeciale,
          gong_number: result.numeroGongEstratto
     });
+
+    await lotto5.syncOccurenceById(Number(saved.insertId));
 
     return res.status(200).json(saved);
 }
