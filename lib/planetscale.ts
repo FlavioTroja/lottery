@@ -27,12 +27,12 @@ export interface LottoDetail {
   parent_id: number;
 }
 
-export interface LottoOccurrence {
+export interface Occurrence {
   id?: Generated<number>;
   date: string;
   ext: number;
-  city: string;
-  occurrence: number;
+  wheel: string;
+  hit: number;
 }
 
 export interface Lotto10 {
@@ -72,7 +72,7 @@ export interface MillionDayDetail {
   parent_id: number;
 }
 
-export interface Lotto10_5 {
+export interface Lotto5 {
   id?: Generated<number>;
   code: string;
   date: number;
@@ -85,24 +85,13 @@ export interface Lotto10_5 {
   gong_number: number;
 }
 
-export interface Lotto10_5Occurrence {
-  id?: Generated<number>;
-  date: string;
-  ext: number;
-  wheel: string;
-  occurrence: number;
-  special_number: string;
-  double_special_number: string;
-  gong_number: string;
-}
-
 export interface Database {
   users: User;
   lotto: Lotto;
   lottodetail: LottoDetail;
-  lottooccurrence: LottoOccurrence;
+  occurrence: Occurrence;
   lotto10: Lotto10;
-  lotto10_5: Lotto10_5;
+  lotto5: Lotto5;
   lotto10detail: Lotto10Detail;
   millionday: MillionDay;
   milliondaydetail: MillionDayDetail;

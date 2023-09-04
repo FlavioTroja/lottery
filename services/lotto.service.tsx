@@ -1,4 +1,4 @@
-import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/planetscale';
+import { queryBuilder, Lotto, LottoDetail, Occurrence, Lotto5 } from '../lib/planetscale';
 export async function findByCode(code: string) {    
     
     return await queryBuilder
@@ -64,89 +64,108 @@ export async function createDetail(detail: LottoDetail) {
     })
     .executeTakeFirst();
 }
+
+// LOTTO5
+export async function createLotto5(lotto5: Lotto5) {    
+    
+    return await queryBuilder
+    .insertInto('lotto5')
+    .values({
+        code: lotto5.code,
+        date: lotto5.date,
+        progressive_daily: lotto5.progressive_daily,
+        maximum_progressive_daily: lotto5.maximum_progressive_daily,
+        numbers: lotto5.numbers,
+        numbers_overtime: lotto5.numbers_overtime,
+        special_number: lotto5.special_number,
+        double_special_number: lotto5.double_special_number,
+        gong_number: lotto5.gong_number
+    })
+    .executeTakeFirst();
+}
   
 
 // OCCURRENCE
 
-    export async function findOccurence(ext: number, city: string) {    
+    export async function findOccurence(ext: number, wheel: string) {    
    
         return await queryBuilder
-        .selectFrom('lottooccurrence')
-        .select(['id', 'date', 'ext', 'city', 'occurrence'])
+        .selectFrom('occurrence')
+        .select(['id', 'date', 'ext', 'wheel', 'hit'])
         .where('ext', '=', ext)
-        .where('city', 'like', `${city}`)
+        .where('wheel', 'like', `${wheel}`)
         .executeTakeFirst();
     }
 
-    export async function aggregateOccurrence(city?: string) {
-        if (!!city) {
+    export async function aggregateOccurrence(wheel?: string) {
+        if (!!wheel) {
             return await queryBuilder
-                .selectFrom('lottooccurrence')
-                .select(['date', 'ext', 'occurrence'])
-                .where('city', 'like', `${city}`)
+                .selectFrom('occurrence')
+                .select(['date', 'ext', 'hit'])
+                .where('wheel', 'like', `${wheel}`)
                 .orderBy('ext')
                 .execute();         
         }
 
         const occs = await queryBuilder
-            .selectFrom('lottooccurrence')
-            .select(['date', 'ext', 'city', 'occurrence'])
+            .selectFrom('occurrence')
+            .select(['date', 'ext', 'wheel', 'hit'])
             .orderBy('ext')
             .execute();     
         
         return occs.map(occ => ({
             date: occs.filter(({ext}) => ext === occ.ext).reduce((acc, cur) => acc + cur.date, ''),
             ext: occ.ext,
-            occurrence: occs.filter(({ext}) => ext === occ.ext).reduce((acc, cur) => acc + cur.occurrence, 0)
+            occurrence: occs.filter(({ext}) => ext === occ.ext).reduce((acc, cur) => acc + cur.hit, 0)
         }));
     }
 
-    export async function updateOccurrence(id: number | undefined, occurrence: number, date: string) {    
+    export async function updateOccurrence(id: number | undefined, hit: number, date: string) {    
    
         return await queryBuilder
-        .updateTable('lottooccurrence')
+        .updateTable('occurrence')
         .set({
-            occurrence,
+            hit,
             date
         })
         .where('id', '=', id)
         .executeTakeFirst()
     }
 
-    export async function createOccurence(occ: LottoOccurrence) {    
+    export async function createOccurence(occ: Occurrence) {    
     
         return await queryBuilder
-        .insertInto('lottooccurrence')
+        .insertInto('occurrence')
         .values({
             ext: occ.ext,
-            city: occ.city,
+            wheel: occ.wheel,
             date: occ.date,
-            occurrence: occ.occurrence
+            hit: occ.hit
         })
         .executeTakeFirst();
     }
 
-    export async function setOccurence(city: string, ext: number, day: string) { 
-        const lottoOccurrence = await findOccurence(ext, city);
+    export async function setOccurence(wheel: string, ext: number, day: string) { 
+        const occurrence = await findOccurence(ext, wheel);
 
-        if (!lottoOccurrence) {
+        if (!occurrence) {
             return await createOccurence({
-                city: city,
+                wheel: wheel,
                 ext,
-                occurrence: 1,
+                hit: 1,
                 date: `["${day}"]`
             });
         } 
 
-        if (lottoOccurrence.date.indexOf(day) !== -1) {
+        if (occurrence.date.indexOf(day) !== -1) {
             return new Error('Estrazione già presente');
         }
 
-        const addDate = new Set([ ...Array.from(lottoOccurrence.date), day]);
+        const addDate = new Set([ ...Array.from(occurrence.date), day]);
 
         return await updateOccurrence(
-            lottoOccurrence.id, 
-            (lottoOccurrence.occurrence ?? 0) + 1,
+            occurrence.id, 
+            (occurrence.hit ?? 0) + 1,
             JSON.stringify(Array.from(addDate))
         ); 
     }
@@ -171,3 +190,24 @@ export async function createDetail(detail: LottoDetail) {
             await setOccurence(city, ext5, date.toString());
         }
     }
+
+    // export async function syncOccurenceByLotto5Id(lotto5Id: number) {    
+    //     const extraction = await queryBuilder
+    //         .selectFrom('lotto5')
+    //         .innerJoin('lottodetail', 'parent_id', 'lotto.id')
+    //         .select(['lotto.id as id', 'lotto.date as date', 'lotto.code as code', 
+    //         'lottodetail.city as city', 'lottodetail.ext1 as ext1', 'lottodetail.ext2 as ext2', 
+    //         'lottodetail.ext3 as ext3', 'lottodetail.ext4 as ext4', 'lottodetail.ext5 as ext5'])
+    //         .where('lotto.id', '=', lottoId)
+    //         .execute();
+        
+    //     for (let i = 0; i < extraction.length; i++) {
+    //         const {city, date, ext1, ext2, ext3, ext4, ext5} = extraction[i];
+    //         console.log(`${date} > ${city} - ${ext1}, ${ext2}, ${ext3}, ${ext4}, ${ext5}`);
+    //         await setOccurence(city, ext1, date.toString());
+    //         await setOccurence(city, ext2, date.toString());
+    //         await setOccurence(city, ext3, date.toString());
+    //         await setOccurence(city, ext4, date.toString());
+    //         await setOccurence(city, ext5, date.toString());
+    //     }
+    // }

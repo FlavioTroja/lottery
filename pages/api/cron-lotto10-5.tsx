@@ -22,7 +22,7 @@ export default async function handler(req: any, res: any) {
     //   return res.status(201).json('Estrazione già presente');
     // }
 
-    const response = await fetch(`${process.env.LOTTO10_5_URL}`, {
+    const response = await fetch(`${process.env.LOTTO5_URL}`, {
       method: "post",
       headers: {
         'Accept': 'application/json',
@@ -45,14 +45,17 @@ export default async function handler(req: any, res: any) {
    
     const result = await response.json();
     
+    const saved = await lotto.createLotto5({
+         code: `${extQuery}/${yearQuery}`,
+         date: result.data,
+         progressive_daily: result.progressivoGiornaliero,
+         maximum_progressive_daily: result.massimoProgressivoGiornaliero,
+         numbers: result.numeriEstratti,
+         numbers_overtime: result.numeriEstrattiOvertime,
+         special_number: result.numeroSpeciale,
+         double_special_number: result.doppioNumeroSpeciale,
+         gong_number: result.numeroGongEstratto
+    });
 
-    console.log("QUI: ", result);
-
-    // const saved = await lotto.create({
-    //     code: `${extQuery}/${yearQuery}`,
-    //     date,
-    //     label
-    // });
-
-    return res.status(200).json(result);
+    return res.status(200).json(saved);
 }
