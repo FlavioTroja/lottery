@@ -29,10 +29,15 @@ export interface LottoDetail {
 
 export interface Occurrence {
   id?: Generated<number>;
-  date: string;
   ext: number;
   wheel: string;
   hit: number;
+}
+
+export interface OccurrenceDate {
+  id?: Generated<number>;
+  parent_id: number;
+  date: Date;
 }
 
 export interface Lotto10 {
@@ -90,6 +95,7 @@ export interface Database {
   lotto: Lotto;
   lottodetail: LottoDetail;
   occurrence: Occurrence;
+  occurrencedate: OccurrenceDate;
   lotto10: Lotto10;
   lotto5: Lotto5;
   lotto10detail: Lotto10Detail;

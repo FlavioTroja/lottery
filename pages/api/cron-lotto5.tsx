@@ -1,4 +1,5 @@
 import * as lotto5 from '../../services/lotto5.service';
+import { setOccurence } from '../../services/occurrence.service';
 import { formattedDateQuery } from '../../services/utils.service';
 
 export default async function handler(req: any, res: any) {    
@@ -57,7 +58,8 @@ export default async function handler(req: any, res: any) {
          gong_number: result.numeroGongEstratto
     });
 
-    await lotto5.syncOccurenceById(Number(saved.insertId));
+    const numbers = Array.from(result.numeriEstratti);
+    numbers.forEach(num => setOccurence("LOTTO5", Number(num), new Date(result.data)));
 
     return res.status(200).json(saved);
 }

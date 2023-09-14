@@ -1,10 +1,10 @@
 'use client';
 
 import { Card, AreaChart, Title, Text } from '@tremor/react';
-import * as lotto from '../../services/lotto.service';
+import * as occurrence from '../../services/occurrence.service';
 
 export default async function Example() {
-    const data = await lotto.aggregateOccurrence("NAZIONALE");       
+    const data = await occurrence.aggregateOccurrence("NAZIONALE");       
      console.log("Data:", data);
   return (
     <Card className="mt-8">

@@ -2,8 +2,8 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 (async function() {
 
-    const year = 20230101;
-    const prog = "lotto10-5";
+    const year = 20230102;
+    const prog = "lotto5";
     
     try {
         console.log("Starting iterate process @ ");

@@ -1,6 +1,7 @@
 'use server'
 
 import { queryBuilder, Lotto5 } from '../lib/planetscale';
+import { setOccurence } from './occurrence.service';
 
 export async function findByCode(code: string) {    
     
@@ -48,19 +49,9 @@ export async function create(lotto5: Lotto5) {
 
 // OCCURRENCE
 
-export async function syncOccurenceById(id: number) {    
-        const extraction = await queryBuilder
-            .selectFrom('lotto5')
-            .selectAll('lotto5')
-            .where('id', '=', id)
-            .executeTakeFirst();
-
-        if (!extraction) {
-            return;
-        }    
-        
-        const numbers = Array.from(extraction.numbers);
+export async function syncOccurence5(nums: string, date: Date) {    
+        const numbers = Array.from(nums);
         for(let i = 0; i < numbers.length; i++ ) {
-            console.log(i + " - " +numbers[i]);
+            await setOccurence("LOTTO5", Number(numbers[i]), date);
         }
     }
