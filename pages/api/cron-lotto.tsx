@@ -39,6 +39,8 @@ export default async function handler(req: any, res: any) {
 
     const found = await lotto.findByCode(`${extQuery}/${yearQuery}`);
     if (found) {
+      // update occurrence
+      await lotto.syncOccurenceByLottoId(Number(found.id)); 
       return res.status(201).json('Estrazione già presente');
     }
 
