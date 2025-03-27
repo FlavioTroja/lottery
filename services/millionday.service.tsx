@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, MillionDay, MillionDayDetail } from '../lib/planetscale';
+import { queryBuilder, MillionDay, MillionDayDetail } from '../lib/postgres';
 
 export async function findByCode(code: string) {    
     

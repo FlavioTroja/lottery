@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, Lotto } from '../lib/planetscale';
+import { queryBuilder, Lotto } from '../lib/postgres';
 
 export async function findByCode(code: string) {    
     

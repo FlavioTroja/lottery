@@ -1,5 +1,5 @@
-import { Generated, Kysely } from 'kysely';
-import { PlanetScaleDialect } from 'kysely-planetscale';
+import { Generated, Kysely, PostgresDialect } from 'kysely';
+import { Pool } from 'pg';
 
 interface User {
   id: Generated<number>;
@@ -81,11 +81,14 @@ export interface Database {
   lotto10detail: Lotto10Detail;
   millionday: MillionDay;
   milliondaydetail: MillionDayDetail;
-  // https://github.com/nextauthjs/next-auth/issues/4922
+  // eventuali altre tabelle
 }
 
 export const queryBuilder = new Kysely<Database>({
-  dialect: new PlanetScaleDialect({
-    url: process.env.DATABASE_URL
-  })
+  dialect: new PostgresDialect({
+    pool: new Pool({
+      connectionString: process.env.DATABASE_URL // Variabile d'ambiente con URL di Neon Postgres
+    }),
+  }),
 });
+

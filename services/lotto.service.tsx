@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/planetscale';
+import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/postgres';
 import * as utils from './utils.service';
 export async function findByCode(code: string) {    
     

@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as millionday from '../../services/millionday.service';
 import * as milliondaydetail from '../../services/millionday.service';
-import { MillionDay, MillionDayDetail } from '../../lib/planetscale';
+import { MillionDay, MillionDayDetail } from '../../lib/postgres';
 
 export default async function handler(req: any, res: any) {    
     let myHeaders = new Headers();

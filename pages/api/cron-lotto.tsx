@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import * as lotto from '../../services/lotto.service';
-import { LottoDetail } from '../../lib/planetscale';
+import { LottoDetail } from '../../lib/postgres';
 
 export default async function handler(req: any, res: any) {    
     let myHeaders = new Headers();

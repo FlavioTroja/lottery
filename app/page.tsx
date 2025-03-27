@@ -1,5 +1,5 @@
 import { Card, Title, Text } from '@tremor/react';
-import { queryBuilder } from '../lib/planetscale';
+import { queryBuilder } from '../lib/postgres';
 import Search from './search';
 import LottoDetailTable from './table';
 
