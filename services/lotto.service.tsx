@@ -46,6 +46,7 @@ export async function create(lotto: Lotto) {
         date: lotto.date,
         label: lotto.label
       })
+      .returning('id')
       .executeTakeFirst();
 }
 
@@ -65,6 +66,7 @@ export async function createDetail(detail: LottoDetail) {
         ext5: detail.ext5,
         parent_id: detail.parent_id
     })
+    .returning('id')
     .executeTakeFirst();
 }
   
