@@ -2,7 +2,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 (async function() {
 
-    const year = 2024;
+    const year = 2023;
     const prog = "lotto";
     
     try {
