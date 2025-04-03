@@ -89,7 +89,7 @@ export default async function handler(req: any, res: any) {
     ext3,
     ext4,
     ext5, 
-    parent_id: Number(saved.id)
+    parent_id: Number(saved?.id)
   }];
 
   // Se esiste un gruppo extra (ad esempio estrazioni bonus), aggiungilo
@@ -102,7 +102,7 @@ export default async function handler(req: any, res: any) {
       ext3,
       ext4,
       ext5, 
-      parent_id: Number(saved.id)
+      parent_id: Number(saved?.id)
     });
   }
 

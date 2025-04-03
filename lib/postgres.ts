@@ -44,14 +44,9 @@ export interface Lotto10 {
 
 export interface Lotto10Detail {
   id?: Generated<number>;
-  code: string;
-  city: string;
-  ext1: number;
-  ext2: number;
-  ext3: number;
-  ext4: number;
-  ext5: number;
   parent_id: number;
+  type: 'PRIMARY' | 'NUMERO ORO' | 'DOPPIO ORO' | 'EXTRA';
+  numbers: number[];
 }
 
 export interface MillionDay {
