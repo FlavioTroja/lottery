@@ -1,7 +1,7 @@
 'use server'
 
-import { queryBuilder, Lotto, LottoDetail, LottoOccurrence } from '../lib/postgres';
-import * as utils from './utils.service';
+import { Lotto, LottoDetail, LottoOccurrence, queryBuilder } from '../lib/postgres';
+import { formattedDate } from './utils.service';
 export async function findByCode(code: string) {    
     
     return await queryBuilder
@@ -83,7 +83,7 @@ export async function createDetail(detail: LottoDetail) {
         .executeTakeFirst();
     }
 
-    export async function updateOccurrence(id: number | undefined, occurrence: number, date: string) {    
+    export async function updateOccurrence(id: number | undefined, occurrence: number, date: string[]) {    
    
         return await queryBuilder
         .updateTable('lottooccurrence')
@@ -113,23 +113,23 @@ export async function createDetail(detail: LottoDetail) {
 
         if (!lottoOccurrence) {
             return await createOccurence({
-                city: city,
-                ext,
-                occurrence: 1,
-                date: `["${day}"]`
+            city,
+            ext,
+            occurrence: 1,
+            date: [day] 
             });
-        } 
-
-        if (lottoOccurrence.date.indexOf(day) !== -1) {
-            return new Error('Estrazione già presente');
         }
 
-        const addDate = new Set([ ...Array.from(lottoOccurrence.date), day]);
+        if (lottoOccurrence.date.includes(day)) {
+            return new Error('Estrazione già presente');
+        }
+        
+        const newDates = [...lottoOccurrence.date, day];
 
         return await updateOccurrence(
             lottoOccurrence.id, 
             (lottoOccurrence.occurrence ?? 0) + 1,
-            JSON.stringify(Array.from(addDate))
+            newDates
         ); 
     }
     
@@ -145,11 +145,11 @@ export async function createDetail(detail: LottoDetail) {
         
         for (let i = 0; i < extraction.length; i++) {
             const {city, date, ext1, ext2, ext3, ext4, ext5} = extraction[i];
-            console.log(`${date} > ${city} - ${ext1}, ${ext2}, ${ext3}, ${ext4}, ${ext5}`);
-            await setOccurence(city, ext1, date.toString());
-            await setOccurence(city, ext2, date.toString());
-            await setOccurence(city, ext3, date.toString());
-            await setOccurence(city, ext4, date.toString());
-            await setOccurence(city, ext5, date.toString());
+            console.log(`${formattedDate(date)} > ${city} - ${ext1}, ${ext2}, ${ext3}, ${ext4}, ${ext5}`);
+            await setOccurence(city, ext1, formattedDate(date));
+            await setOccurence(city, ext2, formattedDate(date));
+            await setOccurence(city, ext3, formattedDate(date));
+            await setOccurence(city, ext4, formattedDate(date));
+            await setOccurence(city, ext5, formattedDate(date));
         }
     }

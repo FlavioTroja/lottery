@@ -29,7 +29,7 @@ export interface LottoDetail {
 
 export interface LottoOccurrence {
   id?: Generated<number>;
-  date: string;
+  date: string[];
   ext: number;
   city: string;
   occurrence: number;

@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
-import * as lotto from '../../services/lotto.service';
 import { LottoDetail } from '../../lib/postgres';
+import * as lotto from '../../services/lotto.service';
 
 export default async function handler(req: any, res: any) {
   // Impostazione degli header, invariata
@@ -95,8 +95,8 @@ export default async function handler(req: any, res: any) {
     if (numbers.length !== 5 || numbers.some(n => isNaN(n))) return;
   
     console.log("DATI:",{
-      code: `R${i}`,  // o un identificatore a tua scelta
-      city,           // es. "BARI", "CAGLIARI", etc.
+      code: `R${i}`,  
+      city,           
       ext1: numbers[0],
       ext2: numbers[1],
       ext3: numbers[2],
@@ -106,8 +106,8 @@ export default async function handler(req: any, res: any) {
     });
 
     exts.push({
-      code: `R${i}`,  // o un identificatore a tua scelta
-      city,           // es. "BARI", "CAGLIARI", etc.
+      code: `R${i}`,  
+      city,           
       ext1: numbers[0],
       ext2: numbers[1],
       ext3: numbers[2],
