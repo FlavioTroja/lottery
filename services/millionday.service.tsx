@@ -1,6 +1,6 @@
 'use server'
 
-import { queryBuilder, MillionDay, MillionDayDetail } from '../lib/postgres';
+import { MillionDay, MillionDayDetail, queryBuilder } from '../lib/postgres';
 
 export async function findByCode(code: string) {    
     
@@ -37,6 +37,7 @@ export async function create(millionday: MillionDay) {
         date: millionday.date,
         label: millionday.label
       })
+      .returning('id')
       .executeTakeFirst();
 }
 
@@ -69,5 +70,6 @@ export async function findOccurenceByExt(ext: string, type?: string) {
           ext5: detail.ext5,
           parent_id: detail.parent_id
         })
+        .returning('id')
         .executeTakeFirst();
   }
