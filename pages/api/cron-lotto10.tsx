@@ -154,7 +154,7 @@ export default async function handler(req: any, res: any) {
   }
 
   // Sincronizza le occorrenze, se presente la funzione (come per Lotto)
-  // await lotto10.syncOccurenceByLottoId(Number(saved.id));
+  await lotto10.syncOccurrence10ByLottoId(Number(saved?.id));
 
   return res.status(200).json(label);
 }

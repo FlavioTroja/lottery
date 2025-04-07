@@ -49,6 +49,14 @@ export interface Lotto10Detail {
   numbers: number[];
 }
 
+export interface Lotto10Occurrence {
+  id?: Generated<number>;
+  date: string[];             
+  ext: number;                
+  type: 'PRIMARY' | 'NUMERO ORO' | 'DOPPIO ORO' | 'EXTRA'; 
+  occurrence: number;         
+}
+
 export interface MillionDay {
   id?: Generated<number>;
   date: Date;
@@ -74,6 +82,7 @@ export interface Database {
   lottooccurrence: LottoOccurrence;
   lotto10: Lotto10;
   lotto10detail: Lotto10Detail;
+  lotto10occurrence: Lotto10Occurrence;
   millionday: MillionDay;
   milliondaydetail: MillionDayDetail;
   // eventuali altre tabelle
