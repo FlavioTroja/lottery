@@ -2,24 +2,9 @@
 
     "crons": [{
   
-      "path": "/api/cron-lotto",
+      "path": "/api/cron-all",
   
       "schedule": "0 20 * * *"
   
-    },
-    {
-  
-      "path": "/api/cron-lotto10",
-  
-      "schedule": "10 20 * * *"
-  
-    },
-    {
-  
-      "path": "/api/cron-millionday",
-  
-      "schedule": "30 20 * * *"
-  
     }]
-    
   }
