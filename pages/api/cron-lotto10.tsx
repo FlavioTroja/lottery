@@ -70,7 +70,8 @@ export default async function handler(req: any, res: any) {
   const saved = await lotto10.create({
     code: `${extQuery}/${yearQuery}`,
     date,
-    label
+    label,
+    type: 'LOTTO10'
   });
 
   // --- Parsing dei numeri ---

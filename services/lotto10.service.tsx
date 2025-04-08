@@ -3,12 +3,13 @@
 import { Lotto10, Lotto10Detail, Lotto10Occurrence, queryBuilder } from '../lib/postgres';
 import { formattedDate } from './utils.service';
 
-export async function findByCode(code: string) {    
+export async function findByCode(code: string, type: 'LOTTO10' | 'LOTTO5') {    
     
     return await queryBuilder
     .selectFrom('lotto10')
     .select(['id', 'date', 'code', 'label'])
     .where('code', 'like', code)
+    .where('type', 'like', type)
     .executeTakeFirst();
 }
 
@@ -35,6 +36,7 @@ export async function create(lotto: Lotto10) {
     .insertInto('lotto10')
     .values({
         code: lotto.code,
+        type: lotto.type,
         date: lotto.date,
         label: lotto.label
       })

@@ -37,6 +37,7 @@ export interface LottoOccurrence {
 
 export interface Lotto10 {
   id?: Generated<number>;
+  type: 'LOTTO10' | 'LOTTO5';
   date: Date;
   code: string;
   label: string;
